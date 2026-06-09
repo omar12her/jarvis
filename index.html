@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>J.A.R.V.I.S.</title>
+    <style>
+        :root {
+            --bg: #0a0a1a;
+            --primary: #00d4ff;
+            --secondary: #0066ff;
+            --text: #e0e0ff;
+            --glow: rgba(0, 212, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Courier New', monospace;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float linear infinite;
+            opacity: 0.2;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 95%;
+            max-width: 500px;
+            text-align: center;
+            padding: 20px 15px;
+        }
+
+        .jarvis-core {
+            width: min(200px, 50vw);
+            height: min(200px, 50vw);
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center,
+                    rgba(0, 212, 255, 0.1) 0%,
+                    rgba(0, 102, 255, 0.05) 40%,
+                    transparent 70%);
+            border: 3px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 40px var(--glow), inset 0 0 40px var(--glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .jarvis-core.listening {
+            border-color: rgba(0, 255, 136, 0.8);
+            box-shadow: 0 0 60px rgba(0, 255, 136, 0.5), inset 0 0 60px rgba(0, 255, 136, 0.3);
+            animation: pulseGreen 1.5s ease-in-out infinite;
+        }
+
+        .jarvis-core.speaking {
+            border-color: rgba(255, 170, 0, 0.8);
+            box-shadow: 0 0 60px rgba(255, 170, 0, 0.5), inset 0 0 60px rgba(255, 170, 0, 0.3);
+            animation: pulseOrange 0.8s ease-in-out infinite;
+        }
+
+        @keyframes pulseGreen {
+            0%, 100% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.5), inset 0 0 40px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(0, 255, 136, 0.8), inset 0 0 80px rgba(0, 255, 136, 0.5); }
+        }
+
+        @keyframes pulseOrange {
+            0%, 100% { box-shadow: 0 0 40px rgba(255, 170, 0, 0.5), inset 0 0 40px rgba(255, 170, 0, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(255, 170, 0, 0.8), inset 0 0 80px rgba(255, 170, 0, 0.5); }
+        }
+
+        .jarvis-core::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: var(--primary);
+            animation: spin 3s linear infinite;
+        }
+
+        .jarvis-core::after {
+            content: '';
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-bottom-color: var(--secondary);
+            animation: spin 2s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .jarvis-icon {
+            font-size: min(60px, 15vw);
+            z-index: 1;
+            filter: drop-shadow(0 0 20px var(--primary));
+            transition: all 0.3s ease;
+        }
+
+        .listening .jarvis-icon {
+            filter: drop-shadow(0 0 30px #00ff88);
+            animation: flickerFast 0.3s infinite;
+        }
+
+        .speaking .jarvis-icon {
+            filter: drop-shadow(0 0 30px #ffaa00);
+            animation: flickerFast 0.2s infinite;
+        }
+
+        @keyframes flickerFast {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .status {
+            font-size: clamp(16px, 4vw, 20px);
+            color: var(--primary);
+            margin-bottom: 25px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            color: #00ff88;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+        }
+
+        .status-speaking {
+            color: #ffaa00;
+            text-shadow: 0 0 20px rgba(255, 170, 0, 0.8);
+        }
+
+        .response-box {
+            margin-top: 20px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            min-height: 80px;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+        }
+
+        .response-text {
+            font-size: clamp(14px, 3.5vw, 16px);
+            line-height: 1.8;
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 25px;
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 25px;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn:active {
+            background: var(--glow);
+            transform: scale(0.95);
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            z-index: 1000;
+            display: none;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="alert" id="alert"></div>
+
+    <div class="container">
+        <div class="jarvis-core" id="jarvisCore">
+            <div class="jarvis-icon">🤖</div>
+        </div>
+
+        <div class="status" id="status">J.A.R.V.I.S. EN LÍNEA</div>
+
+        <button class="btn" id="btnStart" onclick="startJarvis()">
+            🎤 INICIAR JARVIS
+        </button>
+
+        <div class="response-box" id="responseBox">
+            <span class="response-text" id="responseText">
+                Presiona el botón para iniciar y da permisos al micrófono...
+            </span>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // J.A.R.V.I.S. - Versión con botón de inicio
+        // ============================================
+
+        let recognition;
+        let synth = window.speechSynthesis;
+        let isAwake = false;
+        let isProcessing = false;
+        let jarvisVoice = null;
+
+        const jarvisCore = document.getElementById('jarvisCore');
+        const statusDiv = document.getElementById('status');
+        const responseText = document.getElementById('responseText');
+        const responseBox = document.getElementById('responseBox');
+        const btnStart = document.getElementById('btnStart');
+        const alertDiv = document.getElementById('alert');
+
+        // Mostrar alertas
+        function showAlert(msg, duration = 3000) {
+            alertDiv.textContent = msg;
+            alertDiv.style.display = 'block';
+            setTimeout(() => { alertDiv.style.display = 'none'; }, duration);
+        }
+
+        // Crear partículas
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                const size = Math.random() * 3 + 1;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.animationDuration = Math.random() * 10 + 5 + 's';
+                p.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(p);
+            }
+        }
+
+        // Configurar voz
+        function setupJarvisVoice() {
+            const voices = synth.getVoices();
+            if (voices.length > 0) {
+                jarvisVoice = voices.find(v =>
+                    v.lang.includes('es-MX') && v.name.includes('Google')
+                ) || voices.find(v =>
+                    v.lang.includes('es') && v.name.includes('Google')
+                ) || voices.find(v =>
+                    v.lang.includes('es')
+                );
+                console.log('🎤 Voz:', jarvisVoice ? jarvisVoice.name : 'Default');
+            }
+        }
+
+        // JARVIS habla
+        function jarvisSpeak(text) {
+            return new Promise((resolve) => {
+                if (synth.speaking) synth.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-MX';
+                utterance.rate = 0.85;
+                utterance.pitch = 0.7;
+                utterance.volume = 1;
+
+                if (jarvisVoice) utterance.voice = jarvisVoice;
+
+                jarvisCore.className = 'jarvis-core speaking';
+                statusDiv.textContent = 'HABLANDO...';
+                statusDiv.className = 'status status-speaking';
+
+                utterance.onend = () => {
+                    if (isAwake) {
+                        jarvisCore.className = 'jarvis-core listening';
+                        statusDiv.textContent = 'ESCUCHANDO...';
+                        statusDiv.className = 'status status-active';
+                    } else {
+                        jarvisCore.className = 'jarvis-core';
+                        statusDiv.textContent = 'J.A.R.V.I.S. EN LÍNEA';
+                        statusDiv.className = 'status';
+                    }
+                    resolve();
+                };
+
+                utterance.onerror = () => {
+                    resetState();
+                    resolve();
+                };
+
+                synth.speak(utterance);
+            });
+        }
+
+        function resetState() {
+            jarvisCore.className = 'jarvis-core';
+            statusDiv.textContent = 'J.A.R.V.I.S. EN LÍNEA';
+            statusDiv.className = 'status';
+        }
+
+        // Despertar JARVIS
+        async function wakeUpJarvis() {
+            if (isAwake || isProcessing) return;
+            isAwake = true;
+            isProcessing = true;
+
+            jarvisCore.className = 'jarvis-core listening';
+            statusDiv.textContent = 'DESPERTANDO...';
+            statusDiv.className = 'status status-active';
+
+            const hour = new Date().getHours();
+            let greeting = 'Buenas noches';
+            if (hour >= 6 && hour < 12) greeting = 'Buenos días';
+            else if (hour >= 12 && hour < 18) greeting = 'Buenas tardes';
+
+            const phrase =
+                `${greeting}, jefe. Soy Jarvis, su asistente virtual. ¿En qué puedo servirle? Diga "qué puedes hacer" para ver mis capacidades.`;
+
+            responseText.textContent = `🤖 ${phrase}`;
+            responseBox.style.borderColor = 'rgba(0, 255, 136, 0.5)';
+            responseBox.style.boxShadow = '0 0 20px rgba(0, 255, 136, 0.3)';
+
+            await jarvisSpeak(phrase);
+            isProcessing = false;
+            resetAwakeTimer();
+        }
+
+        let awakeTimer;
+
+        function resetAwakeTimer() {
+            clearTimeout(awakeTimer);
+            awakeTimer = setTimeout(() => {
+                if (isAwake && !isProcessing) goToSleep();
+            }, 45000); // 45 segundos
+        }
+
+        async function goToSleep() {
+            isAwake = false;
+            jarvisCore.className = 'jarvis-core';
+            statusDiv.textContent = 'J.A.R.V.I.S. EN LÍNEA';
+            statusDiv.className = 'status';
+            responseText.textContent = 'Di "Hola Jarvis" para activarme...';
+            responseBox.style.borderColor = 'rgba(0, 212, 255, 0.2)';
+            responseBox.style.boxShadow = 'none';
+            console.log('😴 Modo espera');
+        }
+
+        // Procesar comandos
+        async function processCommand(command) {
+            if (isProcessing || !command || command.length < 3) return;
+            isProcessing = true;
+            resetAwakeTimer();
+
+            console.log('📝 Comando:', command);
+            let response = '';
+            let action = null;
+
+            // Comando dormir
+            if (command.includes('duerme') || command.includes('descansa') || command.includes('adiós') || command
+                .includes('gracias')) {
+                response = 'Entendido, jefe. Entrando en modo espera. Cuando me necesite, diga "Hola Jarvis". ¡Hasta luego!';
+                responseText.textContent = `😴 ${response}`;
+                await jarvisSpeak(response);
+                goToSleep();
+                isProcessing = false;
+                return;
+            }
+            // Hola
+            else if (command.includes('hola') || command.includes('qué tal') || command.includes('cómo estás')) {
+                const responses = [
+                    '¡Qué onda, jefe! ¿Todo bien? ¿En qué le ayudo?',
+                    '¡Aquí andamos, patrón! Dígame qué necesita.',
+                    'Todo en orden, mi estimado. ¿Qué desea hacer hoy?',
+                ];
+                response = responses[Math.floor(Math.random() * responses.length)];
+            }
+            // Hora
+            else if (command.includes('hora')) {
+                const now = new Date();
+                response =
+                    `Son las ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')} horas, jefe.`;
+            }
+            // Fecha
+            else if (command.includes('día') || command.includes('fecha') || command.includes('hoy')) {
+                const now = new Date();
+                response = `Hoy es ${now.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.`;
+            }
+            // Chiste
+            else if (command.includes('chiste') || command.includes('broma')) {
+                const jokes = [
+                    '¿Qué le dice un semáforo a otro? No me mires, que me estoy cambiando.',
+                    '¿Por qué los programadores confunden Halloween con Navidad? Porque Oct 31 == Dec 25.',
+                    'Un desarrollador entra a un bar. Pide 1, 2, 0, 99999, -1, y una iguana. Así somos, jefe.',
+                    '¿Qué hace un mulo en programación? ¡Back-end!',
+                ];
+                response = jokes[Math.floor(Math.random() * jokes.length)];
+            }
+            // YouTube
+            else if (command.includes('youtube')) {
+                response = 'Abriendo YouTube, jefe.';
+                action = () => window.open('https://www.youtube.com', '_blank');
+            }
+            // Google
+            else if (command.includes('google') && !command.includes('busca')) {
+                response = 'Abriendo Google.';
+                action = () => window.open('https://www.google.com', '_blank');
+            }
+            // Buscar
+            else if (command.includes('busca') || command.includes('buscar')) {
+                const query = command.replace(/busca|buscar|google|en google/g, '').trim();
+                if (query && query.length > 2) {
+                    response = `Buscando "${query}" en Google...`;
+                    action = () => window.open(
+                        `https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                } else {
+                    response = '¿Qué quiere que busque, jefe?';
+                }
+            }
+            // Capacidades
+            else if (command.includes('qué puedes hacer') || command.includes('capacidades') || command.includes(
+                    'ayuda') || command.includes('funciones')) {
+                response =
+                    'Puedo: decirle la hora y fecha, contar chistes, abrir YouTube, buscar en Google, y más. Diga "Hola Jarvis" para activarme.';
+            }
+            // Comando no reconocido
+            else {
+                response =
+                    `No entendí bien "${command}". Pruebe con: hora, fecha, chiste, youtube, google, o busca [algo].`;
+            }
+
+            responseText.textContent = `🤖 ${response}`;
+            responseBox.style.borderColor = 'rgba(0, 212, 255, 0.5)';
+            responseBox.style.boxShadow = '0 0 20px rgba(0, 212, 255, 0.3)';
+
+            if (action) setTimeout(action, 1500);
+            await jarvisSpeak(response);
+            isProcessing = false;
+        }
+
+        // Iniciar reconocimiento de voz
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                showAlert('⚠️ Tu navegador no soporta reconocimiento de voz. Usa Chrome.', 5000);
+                return null;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.lang = 'es-MX';
+            recognition.continuous = true;
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onresult = function(event) {
+                const last = event.results[event.results.length - 1];
+                if (last && last[0]) {
+                    const command = last[0].transcript.toLowerCase().trim();
+                    console.log('🎤 Escuchado:', command);
+
+                    if (!isAwake && !isProcessing && command.includes('hola jarvis')) {
+                        wakeUpJarvis();
+                    } else if (isAwake && !isProcessing && command.length > 2) {
+                        processCommand(command);
+                    }
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Error:', event.error);
+                if (event.error === 'not-allowed') {
+                    showAlert('❌ Permiso de micrófono denegado. Ve a Configuración > Privacidad > Micrófono y permite el acceso a Chrome.',
+                        8000);
+                }
+                setTimeout(() => {
+                    try {
+                        if (recognition) recognition.start();
+                    } catch (e) {}
+                }, 1000);
+            };
+
+            recognition.onend = function() {
+                console.log('🔄 Reconocimiento reiniciando...');
+                if (!isProcessing) {
+                    setTimeout(() => {
+                        try {
+                            if (recognition) recognition.start();
+                        } catch (e) {}
+                    }, 300);
+                }
+            };
+
+            return recognition;
+        }
+
+        // Función principal de inicio
+        async function startJarvis() {
+            btnStart.style.display = 'none';
+
+            // Pedir permiso de micrófono explícitamente
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop());
+                console.log('✅ Permiso de micrófono concedido');
+            } catch (error) {
+                console.error('❌ Error al pedir micrófono:', error);
+                showAlert(
+                    '❌ Necesito permiso al micrófono. Ve a la configuración del navegador y permite el acceso al micrófono para este sitio.',
+                    8000);
+                btnStart.style.display = 'inline-block';
+                return;
+            }
+
+            // Iniciar reconocimiento
+            recognition = initSpeechRecognition();
+            if (recognition) {
+                try {
+                    recognition.start();
+                    console.log('🎤 Escucha continua iniciada');
+                    statusDiv.textContent = 'J.A.R.V.I.S. EN LÍNEA';
+                    responseText.textContent = '✅ Micrófono conectado. Di "Hola Jarvis" para activarme...';
+                    showAlert('✅ JARVIS iniciado correctamente. Di "Hola Jarvis"', 3000);
+                } catch (e) {
+                    console.error('Error al iniciar:', e);
+                    showAlert('Error al iniciar el reconocimiento. Recarga la página.', 5000);
+                    btnStart.style.display = 'inline-block';
+                }
+            }
+        }
+
+        // Inicialización
+        window.onload = function() {
+            createParticles();
+            setupJarvisVoice();
+            synth.onvoiceschanged = setupJarvisVoice;
+
+            console.log('🤖 J.A.R.V.I.S. listo');
+            console.log('📋 Presiona el botón INICIAR para comenzar');
+        };
+
+        // Mantener vivo al cambiar de pestaña
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && recognition && !isProcessing) {
+                try { recognition.start(); } catch (e) {}
+            }
+        });
+    </script>
+</body>
+</html>
