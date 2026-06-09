@@ -67,7 +67,7 @@
         .jarvis-core {
             width: min(180px, 45vw);
             height: min(180px, 45vw);
-            margin: 0 auto 25px;
+            margin: 0 auto 20px;
             border-radius: 50%;
             background: radial-gradient(circle at center,
                     rgba(0, 212, 255, 0.1) 0%,
@@ -80,6 +80,11 @@
             justify-content: center;
             position: relative;
             transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+        .jarvis-core:active {
+            transform: scale(0.95);
         }
 
         .jarvis-core.listening {
@@ -98,6 +103,11 @@
             border-color: rgba(147, 51, 234, 0.8);
             box-shadow: 0 0 60px rgba(147, 51, 234, 0.5), inset 0 0 60px rgba(147, 51, 234, 0.3);
             animation: pulsePurple 1s ease-in-out infinite;
+        }
+
+        .jarvis-core.error-state {
+            border-color: rgba(255, 0, 0, 0.8);
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.5), inset 0 0 60px rgba(255, 0, 0, 0.3);
         }
 
         @keyframes pulseGreen {
@@ -146,6 +156,7 @@
             font-size: min(55px, 13vw);
             z-index: 1;
             filter: drop-shadow(0 0 20px var(--primary));
+            pointer-events: none;
         }
 
         .listening .jarvis-icon { filter: drop-shadow(0 0 30px #00ff88); animation: flicker 0.3s infinite; }
@@ -160,7 +171,7 @@
         .status {
             font-size: clamp(14px, 3.5vw, 18px);
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             letter-spacing: 3px;
             text-transform: uppercase;
             transition: all 0.3s ease;
@@ -169,26 +180,26 @@
         .status-active { color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.8); }
         .status-speaking { color: #ffaa00; text-shadow: 0 0 20px rgba(255, 170, 0, 0.8); }
         .status-thinking { color: #a855f7; text-shadow: 0 0 20px rgba(147, 51, 234, 0.8); }
+        .status-error { color: #ff4444; text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
 
         .chat-container {
             margin-top: 15px;
-            padding: 20px;
+            padding: 15px;
             background: rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(0, 212, 255, 0.2);
             border-radius: 15px;
-            max-height: 40vh;
+            max-height: 35vh;
             overflow-y: auto;
             backdrop-filter: blur(15px);
             text-align: left;
-            transition: all 0.3s ease;
         }
 
         .chat-message {
-            margin: 8px 0;
-            padding: 10px 15px;
+            margin: 6px 0;
+            padding: 10px 14px;
             border-radius: 15px;
-            font-size: clamp(13px, 3vw, 15px);
-            line-height: 1.6;
+            font-size: clamp(12px, 3vw, 14px);
+            line-height: 1.5;
             animation: fadeIn 0.3s ease;
         }
 
@@ -204,49 +215,17 @@
             border-bottom-left-radius: 5px;
         }
 
-        .chat-message.error {
-            background: rgba(255, 0, 0, 0.1);
-            margin-right: 15px;
-            border-bottom-left-radius: 5px;
-            color: #ff6b6b;
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        .api-setup {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .api-input {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            color: var(--text);
-            padding: 12px 15px;
-            border-radius: 25px;
-            font-family: inherit;
-            font-size: 13px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .api-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 20px var(--glow);
         }
 
         .btn {
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
-            padding: 12px 25px;
-            font-size: 14px;
+            padding: 15px 30px;
+            font-size: 16px;
             font-family: inherit;
             cursor: pointer;
             border-radius: 25px;
@@ -256,35 +235,40 @@
         }
 
         .btn:active { background: var(--glow); transform: scale(0.95); }
-        .btn-small { padding: 8px 16px; font-size: 11px; }
 
-        .btn-link {
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px dashed var(--primary);
-            color: var(--primary);
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .btn-small {
             padding: 8px 16px;
-            font-size: 11px;
-            font-family: inherit;
-            cursor: pointer;
-            border-radius: 20px;
-            text-decoration: none;
-            display: inline-block;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .btn-red {
+            border-color: #ff4444;
+            color: #ff4444;
         }
 
         .commands {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             justify-content: center;
-            margin-top: 12px;
+            margin-top: 10px;
         }
 
         .command-chip {
             background: rgba(0, 212, 255, 0.1);
             border: 1px solid rgba(0, 212, 255, 0.3);
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
             transition: all 0.3s;
             font-family: inherit;
@@ -292,119 +276,80 @@
         }
 
         .command-chip:active { background: rgba(0, 212, 255, 0.3); transform: scale(0.95); }
-        .hidden { display: none !important; }
 
         .chat-container::-webkit-scrollbar { width: 3px; }
         .chat-container::-webkit-scrollbar-track { background: transparent; }
         .chat-container::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 2px; }
-
-        .alert {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 200, 100, 0.9);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 20px;
-            font-family: 'Courier New', monospace;
-            z-index: 1000;
-            font-size: 13px;
-            text-align: center;
-            animation: slideDown 0.5s ease;
-        }
-
-        @keyframes slideDown {
-            from { transform: translate(-50%, -100px); opacity: 0; }
-            to { transform: translate(-50%, 0); opacity: 1; }
-        }
     </style>
 </head>
 <body>
     <div class="particles" id="particles"></div>
 
     <div class="container">
-        <div class="jarvis-core" id="jarvisCore">
+        <div class="jarvis-core" id="jarvisCore" onclick="toggleJarvis()">
             <div class="jarvis-icon">🤖</div>
         </div>
 
-        <div class="status" id="status">J.A.R.V.I.S. EN LÍNEA</div>
-
-        <!-- Setup API Key -->
-        <div class="api-setup" id="apiSetup">
-            <input type="password" class="api-input" id="apiKeyInput" 
-                   placeholder="Pega tu API Key de Gemini (AIzaSy...)" autocomplete="off">
-            <button class="btn btn-small" onclick="saveApiKey()">
-                💾 CONECTAR A GEMINI
-            </button>
-            <small style="color: #ffaa00; font-size: 10px;">
-                ⚠️ Tu clave debe empezar con AIzaSy... No AQ.Ab8...
-            </small>
-            <br>
-            <a href="https://aistudio.google.com/apikey" target="_blank" class="btn-link">
-                🔑 CONSEGUIR API KEY CORRECTA AQUÍ
-            </a>
-        </div>
-
-        <button class="btn hidden" id="btnStart" onclick="startListening()">
-            🎤 INICIAR JARVIS
-        </button>
+        <div class="status" id="status">TOCA EL CÍRCULO PARA INICIAR</div>
 
         <!-- Chat -->
         <div class="chat-container" id="chatContainer">
             <div class="chat-message jarvis">
-                🤖 Bienvenido, jefe. Necesito una API Key de Gemini que empiece con <strong>AIzaSy...</strong><br>
-                <small style="color: #ffaa00;">La clave AQ.Ab8... no funciona con Gemini</small>
+                🤖 <strong>Toca el círculo</strong> para iniciar o di <strong>"Hola Jarvis"</strong>
             </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="controls">
+            <button class="btn btn-small" id="btnRestart" onclick="restartRecognition()">
+                🔄 Reiniciar
+            </button>
         </div>
 
         <!-- Comandos -->
         <div class="commands">
-            <div class="command-chip" onclick="speakCommand('Hola Jarvis')">👋 Hola</div>
-            <div class="command-chip" onclick="speakCommand('Qué hora es')">🕐 Hora</div>
-            <div class="command-chip" onclick="speakCommand('Cuéntame un chiste')">😄 Chiste</div>
-            <div class="command-chip" onclick="speakCommand('Quién es el presidente de México')">🇲🇽 México</div>
+            <div class="command-chip" onclick="sendCommand('Hola Jarvis')">👋 Hola</div>
+            <div class="command-chip" onclick="sendCommand('Qué hora es')">🕐 Hora</div>
+            <div class="command-chip" onclick="sendCommand('Cuéntame un chiste')">😄 Chiste</div>
+            <div class="command-chip" onclick="sendCommand('Qué día es hoy')">📅 Fecha</div>
+            <div class="command-chip" onclick="sendCommand('Ábreme YouTube')">▶️ YouTube</div>
+            <div class="command-chip" onclick="sendCommand('Busca en Google noticias')">🔍 Buscar</div>
         </div>
     </div>
 
     <script>
         // ============================================
-        // J.A.R.V.I.S. AI - Adaptado para Gemini
+        // J.A.R.V.I.S. v3.0 - CORREGIDO Y FUNCIONAL
         // ============================================
 
-        const GEMINI_MODELS = [
-            'gemini-pro',
-            'gemini-1.5-flash',
-            'gemini-flash-latest'
-        ];
-
-        let recognition;
+        let recognition = null;
         let synth = window.speechSynthesis;
         let isAwake = false;
         let isProcessing = false;
         let jarvisVoice = null;
+        let restartTimeout = null;
 
         const jarvisCore = document.getElementById('jarvisCore');
         const statusDiv = document.getElementById('status');
         const chatContainer = document.getElementById('chatContainer');
-        const apiSetup = document.getElementById('apiSetup');
-        const apiKeyInput = document.getElementById('apiKeyInput');
-        const btnStart = document.getElementById('btnStart');
 
-        // ============ BASE DE CONOCIMIENTOS (funciona sin API) ============
+        // ============ BASE DE CONOCIMIENTOS ============
         const knowledgeBase = {
             'hola': [
                 '¡Qué onda, jefe! ¿Todo bien? ¿En qué le ayudo?',
                 '¡Aquí andamos, patrón! Dígame qué necesita.',
                 'Todo en orden, mi estimado. ¿Qué desea hacer hoy?',
+                '¡Eso que ni qué, jefe! ¿Qué se le ofrece?',
             ],
             'cómo estás': [
-                '¡Al cien, jefe! Todos los sistemas funcionando. ¿Usted cómo está?',
-                'De maravilla, patrón. Procesadores listos para servirle.',
+                '¡Al cien, jefe! Todos los sistemas funcionando correctamente.',
+                'De maravilla, patrón. Procesadores al máximo y listo para servirle.',
             ],
             'hora': () => {
                 const now = new Date();
-                return `Son las ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')} horas, jefe.`;
+                const h = now.getHours();
+                const m = now.getMinutes().toString().padStart(2, '0');
+                return `Son las ${h}:${m} horas, jefe. ${h < 12 ? 'De la mañana' : h < 18 ? 'De la tarde' : 'De la noche'}.`;
             },
             'fecha': () => {
                 const now = new Date();
@@ -417,18 +362,28 @@
             'chiste': [
                 '¿Qué le dice un semáforo a otro? No me mires, que me estoy cambiando. ¡Ja, ja, ja!',
                 '¿Por qué los programadores confunden Halloween con Navidad? Porque Oct 31 == Dec 25.',
-                'Un developer entra a un bar. Pide 1, 2, 0, 99999, -1, y una iguana.',
+                'Un developer entra a un bar. Pide 1, 2, 0, 99999, -1, y una iguana. Así somos, jefe.',
+                '¿Qué hace un mulo en programación? ¡Back-end!',
+            ],
+            'broma': [
+                '¿Qué le dice un semáforo a otro? No me mires, que me estoy cambiando.',
+            ],
+            'qué puedes hacer': [
+                'Puedo: decir hora y fecha, contar chistes, abrir YouTube, buscar en Google, y hasta platicar. También funciono con comandos de voz o tocando los botones.',
             ],
             'presidente': [
-                'La presidenta de México es Claudia Sheinbaum, la primera mujer en ocupar el cargo. ¡Histórico, jefe!',
+                'La presidenta de México es Claudia Sheinbaum, la primera mujer en el cargo. ¡Histórico!',
             ],
             'gracias': [
                 'De nada, jefe. Para eso estamos.',
-                'No hay de qué, patrón. Es un placer.',
+                'No hay de qué, patrón. Es un placer servirle.',
+            ],
+            'adiós': [
+                '¡Hasta luego, jefe! Aquí estaré cuando me necesite.',
             ],
         };
 
-        function findAnswer(command) {
+        function findLocalAnswer(command) {
             const lower = command.toLowerCase().trim();
             for (const [key, value] of Object.entries(knowledgeBase)) {
                 if (lower.includes(key)) {
@@ -439,7 +394,16 @@
             return null;
         }
 
-        // ============ VOZ MEJORADA ============
+        function getFallbackResponse(command) {
+            const fallbacks = [
+                `No tengo información sobre "${command}", jefe. Pero puedo buscar en Google si quiere.`,
+                `Esa no me la sé, patrón. ¿Qué tal si me pide: hora, fecha, o un chiste?`,
+                `Interesante pregunta. Diga "busca en Google ${command}" y lo investigo.`,
+            ];
+            return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        }
+
+        // ============ VOZ ============
         function setupJarvisVoice() {
             const voices = synth.getVoices();
             if (voices.length === 0) return;
@@ -452,164 +416,111 @@
                 v.lang.includes('es')
             );
 
-            console.log('🎤 Voz:', jarvisVoice?.name || 'Default');
+            console.log('🎤 Voz seleccionada:', jarvisVoice?.name || 'Default');
         }
 
         function jarvisSpeak(text) {
             return new Promise((resolve) => {
-                if (synth.speaking) synth.cancel();
-                const cleanText = text.replace(/[\*\_\`\[\]\(\)\{\}]/g, '').trim();
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = 'es-MX';
-                utterance.rate = 0.82;
-                utterance.pitch = 0.65;
-                utterance.volume = 1;
-                if (jarvisVoice) utterance.voice = jarvisVoice;
+                try {
+                    if (synth.speaking) {
+                        synth.cancel();
+                    }
 
-                jarvisCore.className = 'jarvis-core speaking';
-                statusDiv.textContent = 'HABLANDO...';
-                statusDiv.className = 'status status-speaking';
+                    const cleanText = text.replace(/[\*\_\`\[\]\(\)\{\}\#]/g, '').trim();
+                    const utterance = new SpeechSynthesisUtterance(cleanText);
+                    utterance.lang = 'es-MX';
+                    utterance.rate = 0.85;
+                    utterance.pitch = 0.65;
+                    utterance.volume = 1;
 
-                utterance.onend = () => {
-                    resetToListen();
+                    if (jarvisVoice) utterance.voice = jarvisVoice;
+
+                    jarvisCore.className = 'jarvis-core speaking';
+                    statusDiv.textContent = 'HABLANDO...';
+                    statusDiv.className = 'status status-speaking';
+
+                    let resolved = false;
+
+                    utterance.onend = () => {
+                        if (!resolved) {
+                            resolved = true;
+                            console.log('✅ Terminó de hablar');
+                            resetToListenState();
+                            resolve();
+                        }
+                    };
+
+                    utterance.onerror = (e) => {
+                        if (!resolved) {
+                            resolved = true;
+                            console.error('Error al hablar:', e);
+                            resetToListenState();
+                            resolve();
+                        }
+                    };
+
+                    // Timeout de seguridad (15 segundos máximo)
+                    setTimeout(() => {
+                        if (!resolved) {
+                            resolved = true;
+                            console.log('⏰ Timeout de voz');
+                            synth.cancel();
+                            resetToListenState();
+                            resolve();
+                        }
+                    }, 15000);
+
+                    synth.speak(utterance);
+                } catch (e) {
+                    console.error('Error en jarvisSpeak:', e);
+                    resetToListenState();
                     resolve();
-                };
-                utterance.onerror = () => {
-                    resetToListen();
-                    resolve();
-                };
-                synth.speak(utterance);
+                }
             });
         }
 
-        function resetToListen() {
-            if (isAwake) {
+        function resetToListenState() {
+            if (isAwake && !isProcessing) {
                 jarvisCore.className = 'jarvis-core listening';
                 statusDiv.textContent = 'ESCUCHANDO...';
                 statusDiv.className = 'status status-active';
-            } else {
+                console.log('🟢 Modo: Escuchando');
+            } else if (!isAwake) {
                 jarvisCore.className = 'jarvis-core';
                 statusDiv.textContent = 'J.A.R.V.I.S. EN LÍNEA';
                 statusDiv.className = 'status';
+                console.log('🔵 Modo: En espera');
             }
-        }
-
-        // ============ API KEY ============
-        function loadApiKey() {
-            const saved = localStorage.getItem('jarvis_gemini_key');
-            if (saved) {
-                apiKeyInput.value = saved;
-                // Validar formato
-                if (saved.startsWith('AIzaSy')) {
-                    apiSetup.classList.add('hidden');
-                    btnStart.classList.remove('hidden');
-                    return saved;
-                } else {
-                    // Clave inválida
-                    addMessage('error',
-                        '⚠️ La API Key guardada no es válida. Debe empezar con AIzaSy... Consiga una en aistudio.google.com/apikey');
-                    apiSetup.classList.remove('hidden');
-                    btnStart.classList.add('hidden');
-                    return null;
-                }
-            }
-            return null;
-        }
-
-        function saveApiKey() {
-            const key = apiKeyInput.value.trim();
-            if (!key) {
-                showAlert('⚠️ Pegue su API Key primero');
-                return;
-            }
-            if (!key.startsWith('AIzaSy')) {
-                showAlert('❌ API Key inválida. Debe empezar con AIzaSy...');
-                addMessage('error',
-                    '❌ Tu clave AQ.Ab8... no funciona con Gemini. Necesitas una que empiece con AIzaSy... Consíguela en: aistudio.google.com/apikey');
-                return;
-            }
-
-            localStorage.setItem('jarvis_gemini_key', key);
-            apiSetup.classList.add('hidden');
-            btnStart.classList.remove('hidden');
-            addMessage('jarvis',
-                '✅ ¡API Key correcta guardada! Ahora sí, soy inteligente de verdad. Inicie la escucha con el botón.');
-            jarvisSpeak(
-                'API Key guardada correctamente. Esta sí es válida, jefe. Ahora puedo responder cualquier pregunta. Inicie la escucha cuando guste.');
         }
 
         // ============ CHAT ============
         function addMessage(type, text) {
             const msg = document.createElement('div');
             msg.className = `chat-message ${type}`;
-            msg.innerHTML = text;
+            msg.textContent = text;
             chatContainer.appendChild(msg);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // ============ GEMINI API (Versión adaptada) ============
-        async function askGemini(question) {
-            const apiKey = localStorage.getItem('jarvis_gemini_key');
-            if (!apiKey || !apiKey.startsWith('AIzaSy')) return null;
-
-            // Probar diferentes modelos
-            for (const model of GEMINI_MODELS) {
-                try {
-                    const url =
-                        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-                    const response = await fetch(`${url}?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{
-                                parts: [{
-                                    text: `Eres J.A.R.V.I.S., un asistente virtual mexicano. Hablas como mexicano amigable, usando expresiones como "jefe", "patrón", "qué onda", "ándele". Eres servicial, ingenioso y con humor mexicano. Responde de manera útil. La pregunta es: ${question}`
-                                }]
-                            }],
-                            generationConfig: {
-                                temperature: 0.8,
-                                maxOutputTokens: 500,
-                            }
-                        })
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-                            console.log(`✅ Modelo ${model} funcionó`);
-                            return data.candidates[0].content.parts[0].text;
-                        }
-                    } else if (response.status === 403) {
-                        console.log(`⚠️ Modelo ${model}: Acceso denegado`);
-                        continue;
-                    } else if (response.status === 404) {
-                        console.log(`⚠️ Modelo ${model}: No encontrado`);
-                        continue;
-                    }
-                } catch (e) {
-                    console.log(`⚠️ Error con modelo ${model}:`, e.message);
-                    continue;
-                }
-            }
-
-            return null;
-        }
-
         // ============ PROCESAR COMANDOS ============
         async function processCommand(command) {
-            if (isProcessing || !command || command.length < 2) return;
+            if (isProcessing || !command || command.length < 2) {
+                console.log('⚠️ No se puede procesar:', { isProcessing, command });
+                return;
+            }
+
             isProcessing = true;
             resetAwakeTimer();
 
             addMessage('user', command);
-            console.log('📝 Comando:', command);
+            console.log('📝 Procesando comando:', command);
 
             let response = '';
             let action = null;
 
-            // Comandos especiales
-            if (command.includes('duerme') || command.includes('descansa')) {
-                response = 'Entendido, jefe. Entrando en modo espera. Diga "Hola Jarvis" cuando me necesite.';
+            // Comandos de control
+            if (command.includes('duerme') || command.includes('descansa') || command.includes('apágate')) {
+                response = 'Entendido, jefe. Entrando en modo espera. Diga "Hola Jarvis" o toque el círculo cuando me necesite.';
                 addMessage('jarvis', response);
                 await jarvisSpeak(response);
                 goToSleep();
@@ -617,75 +528,52 @@
                 return;
             }
 
-            if (command.includes('youtube')) {
+            // Comandos de acción
+            if (command.includes('youtube') || command.includes('yutub')) {
                 response = 'Abriendo YouTube, jefe.';
                 action = () => window.open('https://www.youtube.com', '_blank');
             } else if (command.includes('google') && !command.includes('busca')) {
                 response = 'Abriendo Google.';
                 action = () => window.open('https://www.google.com', '_blank');
-            } else if (command.includes('busca') || command.includes('buscar')) {
-                const query = command.replace(/busca|buscar|google|en google/g, '').trim();
+            } else if (command.includes('busca') || command.includes('buscar') || command.includes('googlea') ||
+                command.includes('investiga')) {
+                const query = command.replace(/busca|buscar|google|googlea|investiga|en google/g, '').trim();
                 if (query && query.length > 2) {
-                    response = `Buscando "${query}" en Google...`;
+                    response = `Buscando "${query}" en Google, jefe...`;
                     action = () => window.open(
                         `https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
                 } else {
-                    response = '¿Qué quiere que busque, jefe?';
+                    response = '¿Qué quiere que busque, jefe? Diga "busca" y luego el tema.';
                 }
             } else {
-                // Buscar en base de conocimiento local
-                const localAnswer = findAnswer(command);
+                // Buscar en base local
+                const localAnswer = findLocalAnswer(command);
                 if (localAnswer) {
                     response = localAnswer;
                 } else {
-                    // Intentar con Gemini
-                    const apiKey = localStorage.getItem('jarvis_gemini_key');
-
-                    if (apiKey && apiKey.startsWith('AIzaSy')) {
-                        jarvisCore.className = 'jarvis-core thinking';
-                        statusDiv.textContent = 'PENSANDO...';
-                        statusDiv.className = 'status status-thinking';
-
-                        const thinkingMsg = document.createElement('div');
-                        thinkingMsg.className = 'chat-message jarvis';
-                        thinkingMsg.textContent = '💭 Consultando a Gemini...';
-                        thinkingMsg.id = 'thinkingMsg';
-                        chatContainer.appendChild(thinkingMsg);
-                        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-                        const aiResponse = await askGemini(command);
-
-                        const thinkEl = document.getElementById('thinkingMsg');
-                        if (thinkEl) thinkEl.remove();
-
-                        if (aiResponse) {
-                            response = aiResponse;
-                        } else {
-                            response =
-                                'Lo siento, jefe. No pude conectar con Gemini. Puede que su API Key no tenga acceso a los modelos. Verifique en Google Cloud Console que la API "Generative Language API" esté activada.';
-                            addMessage('error', '⚠️ Error: La API Key puede no tener Generative Language API habilitada.');
-                        }
-                    } else if (apiKey && !apiKey.startsWith('AIzaSy')) {
-                        response =
-                            'Su API Key actual (AQ.Ab8...) no es compatible con Gemini. Necesita una que empiece con AIzaSy... Consígala en aistudio.google.com/apikey';
-                        apiSetup.classList.remove('hidden');
-                        btnStart.classList.add('hidden');
-                    } else {
-                        response =
-                            'No tengo API Key configurada. Para respuestas inteligentes, configure una API Key de Gemini. Mientras tanto, pregúnteme: hora, fecha, chistes, o use "busca en Google".';
-                    }
+                    response = getFallbackResponse(command);
                 }
             }
 
             addMessage('jarvis', response);
-            if (action) setTimeout(action, 1500);
+
+            if (action) {
+                setTimeout(() => action(), 1000);
+            }
+
             await jarvisSpeak(response);
+            console.log('✅ Comando procesado');
+
             isProcessing = false;
         }
 
         // ============ ESTADOS ============
         async function wakeUpJarvis() {
-            if (isAwake || isProcessing) return;
+            if (isAwake || isProcessing) {
+                console.log('⚠️ Ya está despierto o procesando');
+                return;
+            }
+
             isAwake = true;
             isProcessing = true;
 
@@ -698,17 +586,15 @@
             if (hour >= 6 && hour < 12) greeting = 'Buenos días';
             else if (hour >= 12 && hour < 18) greeting = 'Buenas tardes';
 
-            const hasKey = localStorage.getItem('jarvis_gemini_key');
-            const isValidKey = hasKey && hasKey.startsWith('AIzaSy');
-
-            const phrase = isValidKey ?
-                `${greeting}, jefe. Soy Jarvis con inteligencia artificial de Gemini. ¿En qué puedo ayudarle hoy?` :
-                `${greeting}, jefe. Soy Jarvis. Para activar mi inteligencia total, configure una API Key de Gemini válida (AIzaSy...). La que tiene (AQ.Ab8...) no funciona.`;
+            const phrase =
+                `${greeting}, jefe. Soy Jarvis, su asistente. ¿En qué puedo servirle? Puede hablarme o tocar los botones.`;
 
             addMessage('jarvis', phrase);
             await jarvisSpeak(phrase);
+
             isProcessing = false;
             resetAwakeTimer();
+            console.log('✅ JARVIS despierto y escuchando');
         }
 
         let awakeTimer;
@@ -716,8 +602,11 @@
         function resetAwakeTimer() {
             clearTimeout(awakeTimer);
             awakeTimer = setTimeout(() => {
-                if (isAwake && !isProcessing) goToSleep();
-            }, 60000);
+                if (isAwake && !isProcessing) {
+                    console.log('⏰ Timer de inactividad');
+                    goToSleep();
+                }
+            }, 45000); // 45 segundos
         }
 
         async function goToSleep() {
@@ -725,97 +614,192 @@
             jarvisCore.className = 'jarvis-core';
             statusDiv.textContent = 'J.A.R.V.I.S. EN LÍNEA';
             statusDiv.className = 'status';
-            addMessage('jarvis', '😴 Modo espera. Diga "Hola Jarvis" para despertarme.');
+            console.log('😴 Modo espera');
         }
 
         // ============ RECONOCIMIENTO DE VOZ ============
         function initSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
             if (!SpeechRecognition) {
                 addMessage('jarvis', '⚠️ Use Chrome para reconocimiento de voz.');
+                statusDiv.textContent = '⚠️ USAR CHROME';
                 return null;
+            }
+
+            // Destruir instancia anterior
+            if (recognition) {
+                try {
+                    recognition.stop();
+                    recognition.abort();
+                } catch (e) {}
             }
 
             recognition = new SpeechRecognition();
             recognition.lang = 'es-MX';
             recognition.continuous = true;
             recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = function() {
+                console.log('🎤 Reconocimiento INICIADO');
+            };
 
             recognition.onresult = function(event) {
-                const last = event.results[event.results.length - 1];
-                if (last?.[0]) {
-                    const command = last[0].transcript.toLowerCase().trim();
-                    console.log('🎤 Detectado:', command);
+                console.log('🎤 Resultado recibido:', event.results.length);
 
-                    if (!isAwake && !isProcessing &&
-                        (command.includes('hola jarvis') || command.includes('oye jarvis'))) {
-                        wakeUpJarvis();
+                const lastResult = event.results[event.results.length - 1];
+                if (lastResult && lastResult[0]) {
+                    const command = lastResult[0].transcript.toLowerCase().trim();
+                    console.log('🎤 Texto detectado:', command);
+
+                    if (!isAwake && !isProcessing) {
+                        // Buscar activación
+                        if (command.includes('hola jarvis') ||
+                            command.includes('oye jarvis') ||
+                            command.includes('despierta jarvis') ||
+                            command.includes('jarvis despierta') ||
+                            command.includes('hola') && command.includes('jarvis')) {
+                            console.log('🚀 Activando JARVIS...');
+                            wakeUpJarvis();
+                        }
                     } else if (isAwake && !isProcessing && command.length > 2) {
+                        console.log('📝 Enviando a procesar:', command);
                         processCommand(command);
                     }
                 }
             };
 
             recognition.onerror = function(event) {
-                console.error('Error:', event.error);
-                setTimeout(() => {
-                    try { if (recognition) recognition.start(); } catch (e) {}
-                }, 1000);
+                console.error('❌ Error reconocimiento:', event.error);
+
+                if (event.error === 'not-allowed') {
+                    statusDiv.textContent = '❌ MICRÓFONO BLOQUEADO';
+                    statusDiv.className = 'status status-error';
+                    jarvisCore.className = 'jarvis-core error-state';
+                }
+
+                if (event.error === 'no-speech') {
+                    console.log('🔇 Sin voz detectada');
+                }
+
+                // Reiniciar después de error
+                if (!isProcessing) {
+                    restartRecognition();
+                }
             };
 
             recognition.onend = function() {
+                console.log('🛑 Reconocimiento terminado');
+
+                // Reiniciar si no está procesando
                 if (!isProcessing) {
-                    setTimeout(() => {
-                        try { if (recognition) recognition.start(); } catch (e) {}
-                    }, 300);
+                    console.log('🔄 Reiniciando reconocimiento automático...');
+                    restartRecognition();
                 }
             };
 
             return recognition;
         }
 
-        async function startListening() {
-            btnStart.style.display = 'none';
-
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                stream.getTracks().forEach(track => track.stop());
-            } catch (e) {
-                alert('❌ Necesito permiso al micrófono.');
-                btnStart.style.display = 'inline-block';
-                return;
+        function startRecognition() {
+            if (!recognition) {
+                recognition = initSpeechRecognition();
             }
 
-            recognition = initSpeechRecognition();
             if (recognition) {
                 try {
                     recognition.start();
+                    console.log('✅ Reconocimiento iniciado exitosamente');
                     statusDiv.textContent = 'J.A.R.V.I.S. EN LÍNEA';
-                    addMessage('jarvis', '✅ Listo. Di "Hola Jarvis" para activarme...');
+                    statusDiv.className = 'status';
+                    jarvisCore.className = 'jarvis-core';
                 } catch (e) {
-                    btnStart.style.display = 'inline-block';
+                    console.error('Error al iniciar reconocimiento:', e);
+                    // Intentar de nuevo
+                    setTimeout(() => {
+                        try {
+                            recognition.start();
+                        } catch (e2) {
+                            console.error('Segundo intento fallido');
+                        }
+                    }, 1000);
                 }
             }
         }
 
-        function speakCommand(text) {
+        function restartRecognition() {
+            clearTimeout(restartTimeout);
+            restartTimeout = setTimeout(() => {
+                try {
+                    if (recognition) {
+                        recognition.abort();
+                    }
+                } catch (e) {}
+
+                recognition = null;
+                recognition = initSpeechRecognition();
+
+                if (recognition) {
+                    try {
+                        recognition.start();
+                        console.log('✅ Reconocimiento reiniciado');
+                    } catch (e) {
+                        console.error('Error al reiniciar:', e);
+                    }
+                }
+            }, 500);
+        }
+
+        // ============ INTERACCIÓN MANUAL ============
+        async function toggleJarvis() {
+            if (isProcessing) {
+                console.log('⚠️ Ocupado, espere...');
+                return;
+            }
+
             if (!isAwake) {
-                wakeUpJarvis().then(() => {
-                    setTimeout(() => processCommand(text.toLowerCase()), 2000);
-                });
+                // Iniciar reconocimiento si no existe
+                if (!recognition) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        stream.getTracks().forEach(track => track.stop());
+                        startRecognition();
+                    } catch (e) {
+                        alert('❌ Se necesita permiso al micrófono. Recarga la página y permite el acceso.');
+                        return;
+                    }
+                }
+                await wakeUpJarvis();
             } else {
-                processCommand(text.toLowerCase());
+                await goToSleep();
+                addMessage('jarvis', '😴 Modo espera. Toque el círculo o diga "Hola Jarvis".');
             }
         }
 
-        function showAlert(msg) {
-            const alert = document.createElement('div');
-            alert.className = 'alert';
-            alert.textContent = msg;
-            document.body.appendChild(alert);
-            setTimeout(() => alert.remove(), 3000);
+        function sendCommand(text) {
+            if (!isAwake && text.toLowerCase().includes('hola jarvis')) {
+                if (!recognition) {
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(stream => {
+                            stream.getTracks().forEach(track => track.stop());
+                            startRecognition();
+                            wakeUpJarvis();
+                        })
+                        .catch(() => {
+                            alert('❌ Se necesita permiso al micrófono.');
+                        });
+                } else {
+                    wakeUpJarvis();
+                }
+            } else if (isAwake && !isProcessing) {
+                processCommand(text.toLowerCase());
+            } else if (!isAwake) {
+                addMessage('jarvis', '🤖 Primero active JARVIS diciendo "Hola Jarvis" o tocando el círculo.');
+            }
         }
 
+        // ============ PARTÍCULAS ============
         function createParticles() {
             const container = document.getElementById('particles');
             for (let i = 0; i < 30; i++) {
@@ -831,28 +815,53 @@
             }
         }
 
-        window.onload = function() {
+        // ============ INICIALIZACIÓN ============
+        async function init() {
             createParticles();
             setupJarvisVoice();
             synth.onvoiceschanged = setupJarvisVoice;
 
-            const savedKey = loadApiKey();
-            if (!savedKey) {
-                apiSetup.classList.remove('hidden');
-                btnStart.classList.add('hidden');
-                addMessage('error',
-                    '⚠️ <strong>IMPORTANTE:</strong> Tu clave AQ.Ab8... no funciona con Gemini. Necesitas una API Key que empiece con <strong>AIzaSy...</strong><br><br>👉 Consíguela aquí: <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#00d4ff;">aistudio.google.com/apikey</a>');
+            // Pedir permiso de micrófono al inicio
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop());
+                console.log('✅ Permiso de micrófono concedido');
+                startRecognition();
+            } catch (e) {
+                console.log('⏳ Permiso de micrófono pendiente');
+                statusDiv.textContent = 'TOCA EL CÍRCULO PARA INICIAR';
+                statusDiv.className = 'status';
             }
 
+            // Evento de visibilidad
             document.addEventListener('visibilitychange', () => {
-                if (!document.hidden && recognition && !isProcessing) {
-                    try { recognition.start(); } catch (e) {}
+                if (!document.hidden && !isProcessing) {
+                    console.log('👁️ Página visible, reiniciando reconocimiento');
+                    restartRecognition();
                 }
             });
 
-            console.log('🤖 J.A.R.V.I.S. listo');
-            console.log('⚠️ Se necesita API Key que empiece con AIzaSy...');
-        };
+            // Mantener vivo el reconocimiento cada 30 segundos
+            setInterval(() => {
+                if (!isProcessing && recognition) {
+                    try {
+                        if (recognition.state === 'inactive' || recognition.state === 'ended') {
+                            console.log('🔄 Reinicio periódico');
+                            recognition.start();
+                        }
+                    } catch (e) {
+                        console.log('⚠️ Error en reinicio periódico');
+                    }
+                }
+            }, 30000);
+
+            console.log('🤖 J.A.R.V.I.S. v3.0 CORREGIDO');
+            console.log('💡 Di "Hola Jarvis" o toca el círculo');
+            console.log('🔄 El reconocimiento se reinicia automáticamente');
+        }
+
+        // Iniciar
+        window.onload = init;
     </script>
 </body>
 </html>
